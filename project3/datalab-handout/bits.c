@@ -2,6 +2,8 @@
  * CS:APP Data Lab 
  * 
  * <Please put your name and userid here>
+ <Saanvi Movva, saanvim> <Kruthi Sudigali, kruthi>
+
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -177,7 +179,9 @@ NOTES:
  *   Rating: 1
  */
 int thirdBits(void) {
-  return 2;
+  int x = 0x49;
+  x = (x << 9) | 0x49;
+  return (x << 18) | x;
 }
 //2
 /* 
@@ -200,7 +204,7 @@ int dividePower2(int x, int n) {
  *   Rating: 2
  */
 int isNonNegative(int x) {
-  return 2;
+   return !(x >> 31);
 }
 //4
 /* 
