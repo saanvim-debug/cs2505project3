@@ -193,7 +193,8 @@ int thirdBits(void) {
  *   Rating: 2
  */
 int dividePower2(int x, int n) {
-    return 2;
+    int checkNeg = (1 << n) + ~0;
+    return (x + ((x >> 31) & checkNeg)) >> n;
 }
 //3
 /* 
