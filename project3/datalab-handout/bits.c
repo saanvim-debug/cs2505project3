@@ -179,9 +179,12 @@ NOTES:
  *   Rating: 1
  */
 int thirdBits(void) {
-  int x = 0x49;
-  x = (x << 9) | 0x49;
-  return (x << 18) | x;
+   // base pattern: 01001001 has every third bit set to 1
+   int x = 0x49;
+   // duplicates pattern across 16 bits
+   x = (x << 9) | 0x49;
+   // expands and fills to 32 bits
+   return (x << 18) | x;
 }
 //2
 /* 
@@ -193,8 +196,11 @@ int thirdBits(void) {
  *   Rating: 2
  */
 int dividePower2(int x, int n) {
-    int checkNeg = (1 << n) + ~0;
-    return (x + ((x >> 31) & checkNeg)) >> n;
+   // fixes rounding for negative numbers by adding 2^n - 1
+      int checkNeg = (1 << n) + ~0;
+
+      // gets sign and adds checkNeg if negative
+      return (x + ((x >> 31) & checkNeg)) >> n;
 }
 //3
 /* 
@@ -205,6 +211,7 @@ int dividePower2(int x, int n) {
  *   Rating: 2
  */
 int isNonNegative(int x) {
+   // shifts sign to LSB and returns 1 if 0, 0 if 1
    return !(x >> 31);
 }
 //4
@@ -217,10 +224,19 @@ int isNonNegative(int x) {
  *   Rating: 3
  */
 int remainderPower2(int x, int n) {
+   // lowest n bits set to 1 (2^n - 1)
    int mask = (1 << n) + ~0;
+
+   // finds the sign
    int sign = x >> 31;
+
+   // converts to absolute value
    int absx = (x ^ sign) + (~sign + 1);
+
+   // gets remainder (keeps only lowest n bits)
    int remainder = absx & mask;
+
+   // restores sign to remainder and returns
    return (remainder ^ sign) + (~sign + 1);
 }
 //5
@@ -234,8 +250,13 @@ int remainderPower2(int x, int n) {
  *   Rating: 3
  */
 int replaceByte(int x, int n, int c) {
+   // finds bit shift for a byte
    int shift = n << 3;
+
+   // creates mask that selects target byte
    int mask = 0xFF << shift;
+
+   // clear target byte in x then insert c shifted into correct position
    return (x & ~mask) | (c << shift);
 }
 //6
@@ -252,27 +273,37 @@ int replaceByte(int x, int n, int c) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-   int sign = x >> 31;
-   int b16, b8, b4, b2, b1, b0;
+   // extract sign
+   int sign, b16, b8, b4, b2, b1, b0;
 
-   x = x ^ sign;
+   // flip negative numbers 
+   sign = x >> 31;
+   x = (sign & ~x) | (~sign & x);
 
-   b16 = !!(x >> 16) << 4;
-   x = x >> b16;
+   // binary search for highest set bit by halving each time 
+   b16 = !!( x >> 16) << 4;
+   x >>= b16;  
 
-   b8 = !!(x >> 8) << 3;
-   x = x >> b8;
+   // check upper 8 bits
+   b8  = !!(x >> 8)  << 3;  
+   x >>= b8;   
 
-   b4 = !!(x >> 4) << 2;
-   x = x >> b4;
+   // check upper 4 bits
+   b4  = !!(x >> 4)  << 2;  
+   x >>= b4;   
 
-   b2 = !!(x >> 2) << 1;
-   x = x >> b2;
+   // check upper 2 bits
+   b2  = !!(x >> 2)  << 1;  
+   x >>= b2;  
 
-   b1 = !!(x >> 1);
-   x = x >> b1;
+   // check upper 1 bit
+   b1  = !!(x >> 1);         
+   x >>= b1; 
 
-   b0 = x >> 1;
+   // last bit
+   b0  = x;                        
 
-   return b16 + b8 + b4 + b2 + b1 + b0 + 1;
+  // adds all and one for sign bit
+  return b16 + b8 + b4 + b2 + b1 + b0 + 1;
+
 }
