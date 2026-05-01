@@ -217,7 +217,11 @@ int isNonNegative(int x) {
  *   Rating: 3
  */
 int remainderPower2(int x, int n) {
-    return 2;
+   int mask = (1 << n) + ~0;
+   int sign = x >> 31;
+   int absx = (x ^ sign) + (~sign + 1);
+   int remainder = absx & mask;
+   return (remainder ^ sign) + (~sign + 1);
 }
 //5
 /* 
@@ -230,7 +234,9 @@ int remainderPower2(int x, int n) {
  *   Rating: 3
  */
 int replaceByte(int x, int n, int c) {
-  return 2;
+   int shift = n << 3;
+   int mask = 0xFF << shift;
+   return (x & ~mask) | (c << shift);
 }
 //6
 /* howManyBits - return the minimum number of bits required to represent x in
@@ -246,5 +252,27 @@ int replaceByte(int x, int n, int c) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+   int sign = x >> 31;
+   int b16, b8, b4, b2, b1, b0;
+
+   x = x ^ sign;
+
+   b16 = !!(x >> 16) << 4;
+   x = x >> b16;
+
+   b8 = !!(x >> 8) << 3;
+   x = x >> b8;
+
+   b4 = !!(x >> 4) << 2;
+   x = x >> b4;
+
+   b2 = !!(x >> 2) << 1;
+   x = x >> b2;
+
+   b1 = !!(x >> 1);
+   x = x >> b1;
+
+   b0 = x >> 1;
+
+   return b16 + b8 + b4 + b2 + b1 + b0 + 1;
 }
